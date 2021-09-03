@@ -1,0 +1,58 @@
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 30
+
+    compileOptions {
+
+    }
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11"
+                abiFilters "arm64-v8a"
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+//    packagingOptions {
+//        pickFirst 'jniLibs/arm64-v8a/libmace.so'
+//    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ["src/main/jniLibs"]
+            jni.srcDirs = ['src/cpp']
+        }
+    }
+
+    task ndkClean(type: Delete) {
+        delete fileTree('.externalNativeBuild') {
+            exclude defaultConfig.ndk.abiFilters.collect { '**/' + it }
+        }
+    }
+    tasks.findByPath(':clean').dependsOn ndkClean
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}

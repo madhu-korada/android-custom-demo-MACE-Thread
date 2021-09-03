@@ -1,0 +1,196 @@
+library_name: custom
+target_abis: [arm64-v8a]
+model_graph_format: code
+model_data_format: code
+models:
+  # har_cnn:
+  #   platform: tensorflow
+  #   model_file_path: http://cnbj1.fds.api.xiaomi.com/mace/miai-models/micro/har-cnn/har-cnn.pb
+  #   model_sha256_checksum: 93451bdf0590842ae80e9de72a22ce3b1faee3e0d9cf7b8e2d60421e885ed6e7
+  #   subgraphs:
+  #     - input_tensors:
+  #         - conv1d/conv1d/ExpandDims
+  #       input_shapes:
+  #         - 1,1,128,9
+  #       output_tensors:
+  #         - dense/BiasAdd
+  #       output_shapes:
+  #         - 1,6
+  #   runtime: cpu+gpu
+  #   data_type: fp32_fp32
+  #   limit_opencl_kernel_time: 0
+  #   nnlib_graph_mode: 0
+  #   obfuscate: 0
+  #   winograd: 0
+  # kws_tc_resnet8:
+  #   platform: tensorflow
+  #   model_file_path: https://cdn.cnbj1.fds.api.mi-img.com/mace/miai-models/micro/tensorflow/kws/kws-tc_resnet8.pb
+  #   model_sha256_checksum: c552cf79cb64d3c755ae7d867c1c78b13f55f7589d46def1f70ce657c0db0d79
+  #   subgraphs:
+  #     - input_tensors:
+  #         - input
+  #       input_shapes:
+  #         - 1,98,40,1
+  #       output_tensors:
+  #         - output/softmax
+  #       output_shapes:
+  #         - 1,12
+  #   runtime: cpu+gpu
+  #   data_type: fp32_fp32
+  #   limit_opencl_kernel_time: 0
+  #   nnlib_graph_mode: 0
+  #   obfuscate: 0
+  #   winograd: 0
+  #   quantize: 0
+  mnist_keras:
+    platform: keras
+    model_file_path: /home/hitech/aware/mace-models/micro-models/keras/mnist/mnist.h5
+    model_sha256_checksum: b25f41151bf96b73182df2de310cc890d03dfad3472808064eb1f86e5d378993
+    subgraphs:
+      - input_tensors:
+          - conv2d_input:0
+        input_shapes:
+          - 1,28,28,1
+        output_tensors:
+          - dense_1/Softmax:0
+        output_shapes:
+          - 1,10
+    runtime: cpu+gpu
+    data_type: fp32_fp32
+    limit_opencl_kernel_time: 0
+    nnlib_graph_mode: 0
+    obfuscate: 0
+    winograd: 0
+    quantize: 0
+  cifar10_keras:
+    platform: keras
+    model_file_path: /home/hitech/model_zoo/cifar10.h5
+    model_sha256_checksum: e23de2eefbb2b58eaba24e1b21a107c2c064f430959a0ef991a41973cf350bc8
+    subgraphs:
+      - input_tensors:
+          - conv2d_input:0
+        input_shapes:
+          - 1,32,32,3
+        output_tensors:
+          - activation/Softmax:0
+        output_shapes:
+          - 1,10
+    runtime: cpu+gpu
+    data_type: fp32_fp32
+    limit_opencl_kernel_time: 0
+    nnlib_graph_mode: 0
+    obfuscate: 0
+    winograd: 0
+    quantize: 0
+  # mnist_tf_1:
+  #   platform: tensorflow
+  #   model_file_path: /home/hitech/aware/mace/examples/android-custom-demo-MACE/models/keras/mnist_madhu/mnist.pb
+  #   model_sha256_checksum: 84e0aa52f005bc17013ca171dd17bd0a60f4367c749d91ae5be503a7b46840c2
+  #   subgraphs:
+  #     - input_tensors:
+  #         - x_2
+  #       input_shapes:
+  #         - 1,28,28,1
+  #       output_tensors:
+  #         - output
+  #       output_shapes:
+  #         - 1,10
+  #   runtime: cpu+gpu
+  #   data_type: fp32_fp32
+  #   limit_opencl_kernel_time: 0
+  #   nnlib_graph_mode: 0
+  #   obfuscate: 0
+  #   winograd: 0
+  caffee_mnist:
+    platform: caffe
+    model_file_path: /home/hitech/model_zoo/lenet.prototxt
+    weight_file_path: /home/hitech/model_zoo/lenet_iter_200.caffemodel
+    model_sha256_checksum: 357b3adb1f75ea6ba392c2fa2f76b3091e0e0ba7947985373341add6da3462f0
+    weight_sha256_checksum: 6e046addbaa74b75c0972d100987a790d65882c6a4c76fac4e00cafe2e5f9e85
+    subgraphs:
+      - input_tensors:
+          - data
+        input_shapes:
+          -1,1,28,28
+        output_tensors:
+          - prob
+        output_shapes:
+          - 1,10
+    runtime: cpu+gpu
+    limit_opencl_kernel_time: 0
+    nnlib_graph_mode: 0
+    obfuscate: 0
+    winograd: 0
+  caffee_cifar10:
+    platform: caffe
+    model_file_path: /home/hitech/model_zoo/cifar10_quick.prototxt
+    weight_file_path: /home/hitech/model_zoo/cifar10_quick_iter_400.caffemodel
+    model_sha256_checksum: 75f640b26a7d9d119dd68a215f1d598bfb19fc986d1e6a2c8ea97a6eb4d09eda
+    weight_sha256_checksum: 18533a177ef55f495f1fd5058bfaf3cd19cead98c29886ad8cb55553f1a19c4b
+    subgraphs:
+      - input_tensors:
+          - data
+        input_shapes:
+          -1,3,32,32
+        output_tensors:
+          - prob
+        output_shapes:
+          - 1,10
+    runtime: cpu+gpu
+    limit_opencl_kernel_time: 0
+    nnlib_graph_mode: 0
+    obfuscate: 0
+    winograd: 0
+  mnist_onnx:
+    platform: onnx
+    model_file_path: /home/hitech/repos_disk/pytorch_examples/mnist/mnist_cnn.onnx
+    model_sha256_checksum: a386cd23808d33ac79b04ee9f0d5a10ae82f9d9b81e5c45d5d071ca4f02a0747
+    subgraphs:
+      - input_tensors: input.1
+        output_tensors: 18
+        input_shapes: 1,28,28,1
+        output_shapes: 1,10
+        backend: pytorch
+    runtime: cpu+gpu
+    limit_opencl_kernel_time: 0
+    nnlib_graph_mode: 0
+    # obfuscate: 1
+  # mnist_tf_models:
+  #   platform: tensorflow
+  #   model_file_path: /home/hitech/aware/saved_model.pb
+  #   model_sha256_checksum: 1b7ff39ba8a1822b495dcde06663392a7d82ecf055bda249d2659e49cc945265
+  #   subgraphs:
+  #     - input_tensors:
+  #         - Placeholder
+  #       input_shapes:
+  #         - 1,28,28
+  #       output_tensors:
+  #         - Softmax
+  #       output_shapes:
+  #         - 1,10
+  #   runtime: cpu+gpu
+  #   data_type: fp32_fp32
+  #   limit_opencl_kernel_time: 0
+  #   nnlib_graph_mode: 0
+  #   obfuscate: 0
+  #   winograd: 0
+  # har: # NOT WORKING, so many TF, KERAS issues
+  #   platform: keras
+  #   model_file_path: https://cdn.cnbj1.fds.api.mi-img.com/mace/miai-models/micro/keras/har/har.h5
+  #   model_sha256_checksum: ec0477b8e489541bb34377c9cabc42ee6cefa8bdf0a9f726e06be1b967ea1dcd
+  #   subgraphs:
+  #     - input_tensors:
+  #         - conv2d_1_input:0
+  #       input_shapes:
+  #         - 1,90,3,1
+  #       output_tensors:
+  #         - dense_3/Softmax:0
+  #       output_shapes:
+  #         - 1,6
+  #   runtime: cpu
+  #   data_type: fp32_fp32
+  #   limit_opencl_kernel_time: 0
+  #   nnlib_graph_mode: 0
+  #   obfuscate: 0
+  #   winograd: 0
+

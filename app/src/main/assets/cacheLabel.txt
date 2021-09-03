@@ -1,0 +1,10 @@
+Downstairs
+Jogging
+Sitting
+Standing
+Upstairs
+Walking
+7
+8
+9
+10
