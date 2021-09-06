@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CpuProfilerConfigsState">
+    <option name="userConfigs">
+      <list>
+        <CpuProfilerConfig>
+          <option name="bufferSizeMb" value="0" />
+          <option name="name" value="profile_c++" />
+          <option name="samplingIntervalUs" value="5000" />
+          <option name="technology" value="SAMPLED_NATIVE" />
+        </CpuProfilerConfig>
+      </list>
+    </option>
+  </component>
+</project>

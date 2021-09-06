@@ -60,6 +60,7 @@ public class InitData {
     private String model;
     private String device = "";
     private String device_GPU = "";
+    private String device_thread3 = "";
     private int ompNumThreads;
     private int cpuAffinityPolicy;
     private int openclCacheReusePolicy;
@@ -67,8 +68,10 @@ public class InitData {
     private int gpuPriorityHint;
     private String openclCacheFullPath = "";
     private String openclCacheFullPath_GPU = "";
+    private String openclCacheFullPathThread3 = "";
     private String storagePath = "";
     private String storagePath_GPU = "";
+    private String storagePathThread3 = "";
 
     public InitData() {
         model = MODELS[0];
@@ -77,10 +80,12 @@ public class InitData {
         openclCacheReusePolicy = 1;
         gpuPerfHint = 3;
         gpuPriorityHint = 3;
-        device = DEVICES[1];
+        device = DEVICES[0];
         device_GPU = DEVICES[0];
+        device_thread3 = DEVICES[0];
         storagePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mace";
         storagePath_GPU = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mace_GPU";
+        storagePathThread3 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "maceThread3";
         File file = new File(storagePath);
         if (!file.exists()) {
             file.mkdir();
@@ -89,8 +94,13 @@ public class InitData {
         if (!file_GPU.exists()) {
             file_GPU.mkdir();
         }
+        File fileThread3 = new File(storagePathThread3);
+        if (!fileThread3.exists()) {
+            fileThread3.mkdir();
+        }
         openclCacheFullPath  = storagePath + File.separator + "mace_cl_compiled_program.bin";
         openclCacheFullPath_GPU  = storagePath_GPU + File.separator + "mace_cl_compiled_program.bin";
+        openclCacheFullPathThread3  = storagePath_GPU + File.separator + "mace_cl_compiled_program.bin";
     }
 
     public String getModel() {
@@ -182,9 +192,18 @@ public class InitData {
         return device_GPU;
     }
 
+    public String getDeviceThread3() {
+        return device_thread3;
+    }
+
     public String getOpenclCacheFullPath_GPU() { return openclCacheFullPath_GPU;
     }
 
     public String getStoragePath_GPU() { return storagePath_GPU;
+    }
+    public String getOpenclCacheFullPathThread3() { return openclCacheFullPathThread3;
+    }
+
+    public String getStoragePathThread3() { return storagePathThread3;
     }
 }

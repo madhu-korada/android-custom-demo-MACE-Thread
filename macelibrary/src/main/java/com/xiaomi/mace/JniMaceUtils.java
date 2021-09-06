@@ -23,12 +23,14 @@ public class JniMaceUtils {
     public static native int maceMobilenetCreateGPUContext(String storagePath, String openclCacheFullPath, int opencl_cache_reuse_policy);
 
     public static native int maceMobilenetCreateGPUContextThread(String storagePath, String openclCacheFullPath, int opencl_cache_reuse_policy);
-//    public static native int maceMobilenetCreateGPUContext(String storagePath, String storagePath_gpu, String storagePath_GPU, String openclCacheFullPath_gpu, int opencl_cache_reuse_policy);
+
+    public static native int maceMobilenetCreateGPUContextThread3(String storagePath, String openclCacheFullPath, int opencl_cache_reuse_policy);
 
     public static native int maceMobilenetCreateEngine(int ompNumThreads, int cpuAffinityPolicy, int gpuPerfHint, int gpuPriorityHint, String model, String device);
 
     public static native int maceMobilenetCreateEngineThread(int ompNumThreads, int cpuAffinityPolicy, int gpuPerfHint, int gpuPriorityHint, String model, String device);
-//    public static native int maceMobilenetCreateEngine(int ompNumThreads, int cpuAffinityPolicy, int gpuPerfHint, int gpuPriorityHint, String model, String device, String device_GPU); //, String storagePath, String openclCacheFullPath, int opencl_cache_reuse_policy);
+
+    public static native int maceMobilenetCreateEngineThread3(int ompNumThreads, int cpuAffinityPolicy, int gpuPerfHint, int gpuPriorityHint, String model, String device);
 
     public static native float[] maceMobilenetClassify(float[] input);
 

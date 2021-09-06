@@ -141,8 +141,10 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ap
     private void initJni() {
         AppModel.instance.maceMobilenetCreateGPUContext(initData);
         AppModel.instance.maceMobilenetCreateGPUContextThread(initData);
+        AppModel.instance.maceMobilenetCreateGPUContextThread3(initData);
         AppModel.instance.maceMobilenetCreateEngine(initData, this);
         AppModel.instance.maceMobilenetCreateEngineThread(initData, this);
+        AppModel.instance.maceMobilenetCreateEngineThread3(initData, this);
     }
 
     @Override
@@ -172,6 +174,7 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ap
                 initData.setDevice(content);
                 AppModel.instance.maceMobilenetCreateEngine(initData, CameraActivity.this);
                 AppModel.instance.maceMobilenetCreateEngineThread(initData, CameraActivity.this);
+                AppModel.instance.maceMobilenetCreateEngineThread3(initData, CameraActivity.this);
             }
         });
     }
@@ -186,6 +189,7 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ap
                 handleOnlyCpuSupportByModel(content);
                 AppModel.instance.maceMobilenetCreateEngine(initData, CameraActivity.this);
                 AppModel.instance.maceMobilenetCreateEngineThread(initData, CameraActivity.this);
+                AppModel.instance.maceMobilenetCreateEngineThread3(initData, CameraActivity.this);
             }
         });
     }
@@ -227,5 +231,6 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ap
         initData.setDevice(content);
         AppModel.instance.maceMobilenetCreateEngine(initData, CameraActivity.this);
         AppModel.instance.maceMobilenetCreateEngineThread(initData, CameraActivity.this);
+        AppModel.instance.maceMobilenetCreateEngineThread3(initData, CameraActivity.this);
     }
 }

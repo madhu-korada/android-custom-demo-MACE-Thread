@@ -69,6 +69,20 @@ public class AppModel {
         });
     }
 
+    public void maceMobilenetCreateGPUContextThread3(final InitData initData) {
+        mJniThread.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("myTag", "This is in maceMobilenetCreateGPUContextThread3 run()");
+                int result = JniMaceUtils.maceMobilenetCreateGPUContextThread3(
+                        initData.getStoragePathThread3(),
+                        initData.getOpenclCacheFullPathThread3(),
+                        initData.getOpenclCacheReusePolicy());
+                Log.i("APPModel", "maceMobilenetCreateGPUContextGPUThread3 result = " + result);
+            }
+        });
+    }
+
     public void maceMobilenetCreateEngine(final InitData initData, final CreateEngineCallback callback) {
 //    public void maceMobilenetCreateEngineThread(final InitData initData, final CreateEngineCallback callback) {
         mJniThread.post(new Runnable() {
@@ -106,6 +120,32 @@ public class AppModel {
                         initData.getGpuPerfHint(), initData.getGpuPriorityHint(),
                         initData.getModel(), initData.getDevice_GPU());
                 Log.i("APPModel", "maceMobilenetCreateEngineThread result = " + result);
+
+                if (result == -1) {
+                    stopClassify = true;
+                    MaceApp.app.mMainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onCreateEngineFail(InitData.DEVICES[1].equals(initData.getDevice_GPU()));
+                        }
+                    });
+                } else {
+                    stopClassify = false;
+                }
+            }
+        });
+    }
+
+        public void maceMobilenetCreateEngineThread3(final InitData initData, final CreateEngineCallback callback) {
+        mJniThread.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("myTag", "This is in maceMobilenetCreateEngineThread3 run()");
+                int result = JniMaceUtils.maceMobilenetCreateEngineThread3(
+                        initData.getOmpNumThreads(), initData.getCpuAffinityPolicy(),
+                        initData.getGpuPerfHint(), initData.getGpuPriorityHint(),
+                        initData.getModel(), initData.getDeviceThread3());
+                Log.i("APPModel", "maceMobilenetCreateEngineThread3 result = " + result);
 
                 if (result == -1) {
                     stopClassify = true;
