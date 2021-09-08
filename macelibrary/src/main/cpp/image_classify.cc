@@ -40,6 +40,8 @@ int cumulative_time = 0;
 int cumulative_time_CPU = 0;
 int cumulative_time_GPU = 0;
 int cumulative_time_thread3 = 0;
+int cumulative_time_thread4 = 0;
+int cumulative_time_thread5 = 0;
 int frame_no = 0;
 
 
@@ -100,6 +102,27 @@ struct MaceContextThread3 {
     };
 };
 
+struct MaceContextThread4 {
+    std::shared_ptr<mace::OpenclContext> gpu_context_thread;
+    std::shared_ptr<mace::MaceEngine> engine_thread;
+    std::string model_name_thread;
+    mace::RuntimeType runtime_type_thread = mace::RuntimeType::RT_CPU;
+    std::map<std::string, ModelInfo> model_infos_thread = {
+//        {"mnist_keras", {"input_input:0", "output/Softmax:0", {1, 28, 28, 1}, {1, 10}}}
+        {"mnist_keras_network_2", {"input_input_1:0", "output/Softmax_1:0", {1, 28, 28, 1}, {1, 10}}}
+    };
+};
+
+struct MaceContextThread5 {
+    std::shared_ptr<mace::OpenclContext> gpu_context_thread;
+    std::shared_ptr<mace::MaceEngine> engine_thread;
+    std::string model_name_thread;
+    mace::RuntimeType runtime_type_thread = mace::RuntimeType::RT_CPU;
+    std::map<std::string, ModelInfo> model_infos_thread = {
+//        {"mnist_keras", {"input_input:0", "output/Softmax:0", {1, 28, 28, 1}, {1, 10}}}
+        {"mnist_keras_network_2", {"input_input_1:0", "output/Softmax_1:0", {1, 28, 28, 1}, {1, 10}}}
+    };
+};
 mace::RuntimeType ParseDeviceType(const std::string &device) {
   if (device.compare("CPU") == 0) {
     return mace::RuntimeType::RT_CPU;
@@ -133,6 +156,18 @@ MaceContextThread3& GetMaceContextThread3() {
     return *mace_context_thread3;
 }
 
+MaceContextThread4& GetMaceContextThread4() {
+    // TODO(yejianwu): In multi-dlopen process, this step may cause memory leak.
+    static auto *mace_context_thread4 = new MaceContextThread4;
+
+    return *mace_context_thread4;
+}
+MaceContextThread5& GetMaceContextThread5() {
+    // TODO(yejianwu): In multi-dlopen process, this step may cause memory leak.
+    static auto *mace_context_thread5 = new MaceContextThread5;
+
+    return *mace_context_thread5;
+}
 
 }  // namespace
 
@@ -217,6 +252,66 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateGPUContextThread3(
 
     // SetStoragePath will be replaced by SetOpenCLCacheFullPath in the future
     mace_context_thread3.gpu_context_thread = mace::GPUContextBuilder()
+            .SetStoragePath(storage_file_path)
+            .SetOpenCLCacheFullPath(str_opencl_cache_full_path)
+            .SetOpenCLCacheReusePolicy(
+                    static_cast<mace::OpenCLCacheReusePolicy>(opencl_cache_reuse_policy))
+            .Finalize();
+
+    return JNI_OK;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateGPUContextThread4(
+        JNIEnv *env, jclass thisObj, jstring storage_path,
+        jstring opencl_cache_full_path, jint opencl_cache_reuse_policy) {
+    MaceContextThread4 &mace_context_thread4 = GetMaceContextThread4();
+    // DO NOT USE tmp directory.
+    // Please use APP's own directory and make sure the directory exists.
+    const char *storage_path_ptr = env->GetStringUTFChars(storage_path, nullptr);
+    if (storage_path_ptr == nullptr) return JNI_ERR;
+    const std::string storage_file_path(storage_path_ptr);
+    env->ReleaseStringUTFChars(storage_path, storage_path_ptr);
+
+    const char *opencl_cache_full_path_ptr =
+            env->GetStringUTFChars(opencl_cache_full_path, nullptr);
+    if (opencl_cache_full_path_ptr == nullptr) return JNI_ERR;
+    const std::string str_opencl_cache_full_path(opencl_cache_full_path_ptr);
+    env->ReleaseStringUTFChars(opencl_cache_full_path,
+                               opencl_cache_full_path_ptr);
+
+    // SetStoragePath will be replaced by SetOpenCLCacheFullPath in the future
+    mace_context_thread4.gpu_context_thread = mace::GPUContextBuilder()
+            .SetStoragePath(storage_file_path)
+            .SetOpenCLCacheFullPath(str_opencl_cache_full_path)
+            .SetOpenCLCacheReusePolicy(
+                    static_cast<mace::OpenCLCacheReusePolicy>(opencl_cache_reuse_policy))
+            .Finalize();
+
+    return JNI_OK;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateGPUContextThread5(
+        JNIEnv *env, jclass thisObj, jstring storage_path,
+        jstring opencl_cache_full_path, jint opencl_cache_reuse_policy) {
+    MaceContextThread5 &mace_context_thread5 = GetMaceContextThread5();
+    // DO NOT USE tmp directory.
+    // Please use APP's own directory and make sure the directory exists.
+    const char *storage_path_ptr = env->GetStringUTFChars(storage_path, nullptr);
+    if (storage_path_ptr == nullptr) return JNI_ERR;
+    const std::string storage_file_path(storage_path_ptr);
+    env->ReleaseStringUTFChars(storage_path, storage_path_ptr);
+
+    const char *opencl_cache_full_path_ptr =
+            env->GetStringUTFChars(opencl_cache_full_path, nullptr);
+    if (opencl_cache_full_path_ptr == nullptr) return JNI_ERR;
+    const std::string str_opencl_cache_full_path(opencl_cache_full_path_ptr);
+    env->ReleaseStringUTFChars(opencl_cache_full_path,
+                               opencl_cache_full_path_ptr);
+
+    // SetStoragePath will be replaced by SetOpenCLCacheFullPath in the future
+    mace_context_thread5.gpu_context_thread = mace::GPUContextBuilder()
             .SetStoragePath(storage_file_path)
             .SetOpenCLCacheFullPath(str_opencl_cache_full_path)
             .SetOpenCLCacheReusePolicy(
@@ -422,7 +517,7 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateEngineThread3(
             static_cast<mace::CPUAffinityPolicy>(cpu_affinity_policy));
     if (status != mace::MaceStatus::MACE_SUCCESS) {
         __android_log_print(ANDROID_LOG_ERROR,
-                            "Thread 2 - CPU -- image_classify attrs",
+                            "Thread 3 - CPU -- image_classify attrs",
                             "threads: %d, cpu: %d",
                             num_threads, cpu_affinity_policy);
     }
@@ -432,13 +527,13 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateEngineThread3(
                 static_cast<mace::GPUPerfHint>(gpu_perf_hint),
                 static_cast<mace::GPUPriorityHint>(gpu_priority_hint));
         __android_log_print(ANDROID_LOG_INFO,
-                            "Thread 2 - CPU -- image_classify attrs",
+                            "Thread 3 - CPU -- image_classify attrs",
                             "gpu perf: %d, priority: %d",
                             gpu_perf_hint, gpu_priority_hint);
     }
 
     __android_log_print(ANDROID_LOG_INFO,
-                        "Thread 2 - CPU -- image_classify attrs",
+                        "Thread 3 - CPU -- image_classify attrs",
                         "device: %d",
                         mace_context_thread3.runtime_type_thread);
 
@@ -455,7 +550,7 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateEngineThread3(
             mace_context_thread3.model_infos_thread.find(mace_context_thread3.model_name_thread);
     if (model_info_iter == mace_context_thread3.model_infos_thread.end()) {
         __android_log_print(ANDROID_LOG_ERROR,
-                            "Thread 2 - CPU -- image_classify",
+                            "Thread 3 - CPU -- image_classify",
                             "Invalid model name: %s",
                             mace_context_thread3.model_name_thread.c_str());
         return JNI_ERR;
@@ -479,7 +574,7 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateEngineThread3(
     LOGI("In maceMobilenetCreateEngineThread mid line !!!!!!!");
 
     __android_log_print(ANDROID_LOG_INFO,
-                        "Thread 2 - CPU -- image_classify attrs",
+                        "Thread 3 - CPU -- image_classify attrs",
                         "create result: %s",
                         create_engine_status.information().c_str());
 
@@ -489,6 +584,188 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateEngineThread3(
 }
 
 
+JNIEXPORT jint JNICALL
+Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateEngineThread4(
+        JNIEnv *env, jclass thisObj, jint num_threads, jint cpu_affinity_policy,
+        jint gpu_perf_hint, jint gpu_priority_hint,
+        jstring model_name_str, jstring device) {
+    LOGI("In maceMobilenetCreateEngineThread first line !!!!!!!");
+
+    MaceContextThread4 &mace_context_thread4 = GetMaceContextThread4();
+
+    // get device
+    const char *device_ptr = env->GetStringUTFChars(device, nullptr);
+    if (device_ptr == nullptr) return JNI_ERR;
+    mace_context_thread4.runtime_type_thread = ParseDeviceType(device_ptr);
+    env->ReleaseStringUTFChars(device, device_ptr);
+
+    // create MaceEngineConfig
+    mace::MaceStatus status;
+    mace::MaceEngineConfig config;
+    config.SetRuntimeType(mace_context_thread4.runtime_type_thread);
+    status = config.SetCPUThreadPolicy(
+            num_threads,
+            static_cast<mace::CPUAffinityPolicy>(cpu_affinity_policy));
+    if (status != mace::MaceStatus::MACE_SUCCESS) {
+        __android_log_print(ANDROID_LOG_ERROR,
+                            "Thread 4 - CPU -- image_classify attrs",
+                            "threads: %d, cpu: %d",
+                            num_threads, cpu_affinity_policy);
+    }
+    if (mace_context_thread4.runtime_type_thread == mace::RuntimeType::RT_OPENCL) {
+        config.SetGPUContext(mace_context_thread4.gpu_context_thread);
+        config.SetGPUHints(
+                static_cast<mace::GPUPerfHint>(gpu_perf_hint),
+                static_cast<mace::GPUPriorityHint>(gpu_priority_hint));
+        __android_log_print(ANDROID_LOG_INFO,
+                            "Thread 4 - CPU -- image_classify attrs",
+                            "gpu perf: %d, priority: %d",
+                            gpu_perf_hint, gpu_priority_hint);
+    }
+
+    __android_log_print(ANDROID_LOG_INFO,
+                        "Thread 4 - CPU -- image_classify attrs",
+                        "device: %d",
+                        mace_context_thread4.runtime_type_thread);
+
+    //  parse model name
+    const char *model_name_ptr = env->GetStringUTFChars(model_name_str, nullptr);
+    if (model_name_ptr == nullptr) return JNI_ERR;
+    mace_context_thread4.model_name_thread.assign(model_name_ptr);
+    env->ReleaseStringUTFChars(model_name_str, model_name_ptr);
+
+    LOGI("In maceMobilenetCreateEngineThread mid line !!!!!!!");
+
+    //  load model input and output name
+    auto model_info_iter =
+            mace_context_thread4.model_infos_thread.find(mace_context_thread4.model_name_thread);
+    if (model_info_iter == mace_context_thread4.model_infos_thread.end()) {
+        __android_log_print(ANDROID_LOG_ERROR,
+                            "Thread 4 - CPU -- image_classify",
+                            "Invalid model name: %s",
+                            mace_context_thread4.model_name_thread.c_str());
+        return JNI_ERR;
+    }
+    LOGI("In maceMobilenetCreateEngineThread mid line !!!!!!!");
+
+    std::vector<std::string> input_names = {model_info_iter->second.input_name};
+    std::vector<std::string> output_names = {model_info_iter->second.output_name};
+
+    mace::MaceStatus create_engine_status =
+            CreateMaceEngineFromCode(mace_context_thread4.model_name_thread,
+                                     nullptr,
+                                     0,
+                                     input_names,
+                                     output_names,
+                                     config,
+                                     &mace_context_thread4.engine_thread,
+                                     nullptr,
+                                     nullptr,
+                                     false);
+    LOGI("In maceMobilenetCreateEngineThread mid line !!!!!!!");
+
+    __android_log_print(ANDROID_LOG_INFO,
+                        "Thread 4 - CPU -- image_classify attrs",
+                        "create result: %s",
+                        create_engine_status.information().c_str());
+
+    LOGI("In maceMobilenetCreateEngineThread final line !!!!!!!");
+    return create_engine_status == mace::MaceStatus::MACE_SUCCESS ?
+           JNI_OK : JNI_ERR;
+}
+
+
+JNIEXPORT jint JNICALL
+Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateEngineThread5(
+        JNIEnv *env, jclass thisObj, jint num_threads, jint cpu_affinity_policy,
+        jint gpu_perf_hint, jint gpu_priority_hint,
+        jstring model_name_str, jstring device) {
+    LOGI("In maceMobilenetCreateEngineThread first line !!!!!!!");
+
+    MaceContextThread5 &mace_context_thread5 = GetMaceContextThread5();
+
+    // get device
+    const char *device_ptr = env->GetStringUTFChars(device, nullptr);
+    if (device_ptr == nullptr) return JNI_ERR;
+    mace_context_thread5.runtime_type_thread = ParseDeviceType(device_ptr);
+    env->ReleaseStringUTFChars(device, device_ptr);
+
+    // create MaceEngineConfig
+    mace::MaceStatus status;
+    mace::MaceEngineConfig config;
+    config.SetRuntimeType(mace_context_thread5.runtime_type_thread);
+    status = config.SetCPUThreadPolicy(
+            num_threads,
+            static_cast<mace::CPUAffinityPolicy>(cpu_affinity_policy));
+    if (status != mace::MaceStatus::MACE_SUCCESS) {
+        __android_log_print(ANDROID_LOG_ERROR,
+                            "Thread 5 - CPU -- image_classify attrs",
+                            "threads: %d, cpu: %d",
+                            num_threads, cpu_affinity_policy);
+    }
+    if (mace_context_thread5.runtime_type_thread == mace::RuntimeType::RT_OPENCL) {
+        config.SetGPUContext(mace_context_thread5.gpu_context_thread);
+        config.SetGPUHints(
+                static_cast<mace::GPUPerfHint>(gpu_perf_hint),
+                static_cast<mace::GPUPriorityHint>(gpu_priority_hint));
+        __android_log_print(ANDROID_LOG_INFO,
+                            "Thread 5 - CPU -- image_classify attrs",
+                            "gpu perf: %d, priority: %d",
+                            gpu_perf_hint, gpu_priority_hint);
+    }
+
+    __android_log_print(ANDROID_LOG_INFO,
+                        "Thread 5 - CPU -- image_classify attrs",
+                        "device: %d",
+                        mace_context_thread5.runtime_type_thread);
+
+    //  parse model name
+    const char *model_name_ptr = env->GetStringUTFChars(model_name_str, nullptr);
+    if (model_name_ptr == nullptr) return JNI_ERR;
+    mace_context_thread5.model_name_thread.assign(model_name_ptr);
+    env->ReleaseStringUTFChars(model_name_str, model_name_ptr);
+
+    LOGI("In maceMobilenetCreateEngineThread mid line !!!!!!!");
+
+    //  load model input and output name
+    auto model_info_iter =
+            mace_context_thread5.model_infos_thread.find(mace_context_thread5.model_name_thread);
+    if (model_info_iter == mace_context_thread5.model_infos_thread.end()) {
+        __android_log_print(ANDROID_LOG_ERROR,
+                            "Thread 5 - CPU -- image_classify",
+                            "Invalid model name: %s",
+                            mace_context_thread5.model_name_thread.c_str());
+        return JNI_ERR;
+    }
+    LOGI("In maceMobilenetCreateEngineThread mid line !!!!!!!");
+
+    std::vector<std::string> input_names = {model_info_iter->second.input_name};
+    std::vector<std::string> output_names = {model_info_iter->second.output_name};
+
+    mace::MaceStatus create_engine_status =
+            CreateMaceEngineFromCode(mace_context_thread5.model_name_thread,
+                                     nullptr,
+                                     0,
+                                     input_names,
+                                     output_names,
+                                     config,
+                                     &mace_context_thread5.engine_thread,
+                                     nullptr,
+                                     nullptr,
+                                     false);
+    LOGI("In maceMobilenetCreateEngineThread mid line !!!!!!!");
+
+    __android_log_print(ANDROID_LOG_INFO,
+                        "Thread 5 - CPU -- image_classify attrs",
+                        "create result: %s",
+                        create_engine_status.information().c_str());
+
+    LOGI("In maceMobilenetCreateEngineThread final line !!!!!!!");
+    return create_engine_status == mace::MaceStatus::MACE_SUCCESS ?
+           JNI_OK : JNI_ERR;
+}
+
+////  
 void GPUInfer(MaceContext &mace_context, std::map<std::string,
               mace::MaceTensor> &inputs, std::map<std::string, mace::MaceTensor> &outputs)
 {
@@ -539,6 +816,40 @@ void Thread3Infer(MaceContextThread3 &mace_context_thread, std::map<std::string,
 
 }
 
+void Thread4Infer(MaceContextThread4 &mace_context_thread, std::map<std::string,
+        mace::MaceTensor> &inputs_thread, std::map<std::string, mace::MaceTensor> &outputs_thread)
+{
+    using milli = std::chrono::milliseconds;
+    auto start = std::chrono::high_resolution_clock::now();
+    mace_context_thread.engine_thread->Run(inputs_thread, &outputs_thread);
+
+    auto finish = std::chrono::high_resolution_clock::now();
+    // calculate the time diff and put it in int
+    int time_diff = std::chrono::duration_cast<milli>(finish - start).count();
+    cumulative_time_thread4 = cumulative_time_thread4 + time_diff;
+
+    LOGI("In frame no %d MACE Thread4 CPU model took %d milliseconds. Cumulative time is %d",
+         frame_no, time_diff, cumulative_time_thread4);
+
+}
+
+void Thread5Infer(MaceContextThread5 &mace_context_thread, std::map<std::string,
+        mace::MaceTensor> &inputs_thread, std::map<std::string, mace::MaceTensor> &outputs_thread)
+{
+    using milli = std::chrono::milliseconds;
+    auto start = std::chrono::high_resolution_clock::now();
+    mace_context_thread.engine_thread->Run(inputs_thread, &outputs_thread);
+
+    auto finish = std::chrono::high_resolution_clock::now();
+    // calculate the time diff and put it in int
+    int time_diff = std::chrono::duration_cast<milli>(finish - start).count();
+    cumulative_time_thread5 = cumulative_time_thread5 + time_diff;
+
+    LOGI("In frame no %d MACE Thread5 CPU model took %d milliseconds. Cumulative time is %d",
+         frame_no, time_diff, cumulative_time_thread5);
+
+}
+
 JNIEXPORT jfloatArray JNICALL
 Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetClassify(
         JNIEnv *env, jclass thisObj, jfloatArray input_data) {
@@ -547,6 +858,8 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetClassify(
     MaceContext &mace_context = GetMaceContext();
     MaceContext_thread &mace_context_thread = GetMaceContextThread();
     MaceContextThread3 &mace_context_thread3 = GetMaceContextThread3();
+    MaceContextThread4 &mace_context_thread4 = GetMaceContextThread4();
+    MaceContextThread5 &mace_context_thread5 = GetMaceContextThread5();
 
     //  prepare input and output
     auto model_info_iter =
@@ -579,9 +892,31 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetClassify(
         return nullptr;
     }
 
+    auto model_info_iter_thread4 =
+            mace_context_thread4.model_infos_thread.find(mace_context_thread4.model_name_thread);
+    if (model_info_iter_thread4 == mace_context_thread4.model_infos_thread.end()) {
+        __android_log_print(ANDROID_LOG_ERROR,
+                            "CPU ---- image_classify",
+                            "Invalid model name: %s",
+                            mace_context_thread4.model_name_thread.c_str());
+        return nullptr;
+    }
+
+    auto model_info_iter_thread5 =
+            mace_context_thread5.model_infos_thread.find(mace_context_thread5.model_name_thread);
+    if (model_info_iter_thread5 == mace_context_thread5.model_infos_thread.end()) {
+        __android_log_print(ANDROID_LOG_ERROR,
+                            "CPU ---- image_classify",
+                            "Invalid model name: %s",
+                            mace_context_thread5.model_name_thread.c_str());
+        return nullptr;
+    }
+
     const ModelInfo &model_info = model_info_iter->second;
     const ModelInfo &model_info_thread = model_info_iter_thread->second;
     const ModelInfo &model_info_thread3 = model_info_iter_thread3->second;
+    const ModelInfo &model_info_thread4 = model_info_iter_thread4->second;
+    const ModelInfo &model_info_thread5 = model_info_iter_thread5->second;
 
     const std::string &input_name = model_info.input_name;
     const std::string &output_name = model_info.output_name;
@@ -612,6 +947,24 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetClassify(
     const int64_t output_size_thread3 = std::accumulate(output_shape_thread3.begin(), output_shape_thread3.end(), 1,
                                                        std::multiplies<int64_t>());
 
+    const std::string &input_name_thread4 = model_info_thread4.input_name;
+    const std::string &output_name_thread4 = model_info_thread4.output_name;
+    const std::vector<int64_t> &input_shape_thread4 = model_info_thread4.input_shape;
+    const std::vector<int64_t> &output_shape_thread4 = model_info_thread4.output_shape;
+    const int64_t input_size_thread4 = std::accumulate(input_shape_thread4.begin(), input_shape_thread4.end(), 1,
+                                                      std::multiplies<int64_t>());
+    const int64_t output_size_thread4 = std::accumulate(output_shape_thread4.begin(), output_shape_thread4.end(), 1,
+                                                       std::multiplies<int64_t>());
+
+    const std::string &input_name_thread5 = model_info_thread5.input_name;
+    const std::string &output_name_thread5 = model_info_thread5.output_name;
+    const std::vector<int64_t> &input_shape_thread5 = model_info_thread5.input_shape;
+    const std::vector<int64_t> &output_shape_thread5 = model_info_thread5.output_shape;
+    const int64_t input_size_thread5 = std::accumulate(input_shape_thread5.begin(), input_shape_thread5.end(), 1,
+                                                      std::multiplies<int64_t>());
+    const int64_t output_size_thread5 = std::accumulate(output_shape_thread5.begin(), output_shape_thread5.end(), 1,
+                                                       std::multiplies<int64_t>());
+
     //  load input
     jfloat *input_data_ptr = env->GetFloatArrayElements(input_data, nullptr);
 
@@ -627,6 +980,12 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetClassify(
 
     std::map<std::string, mace::MaceTensor> inputs_thread3;
     std::map<std::string, mace::MaceTensor> outputs_thread3;
+
+    std::map<std::string, mace::MaceTensor> inputs_thread4;
+    std::map<std::string, mace::MaceTensor> outputs_thread4;
+
+    std::map<std::string, mace::MaceTensor> inputs_thread5;
+    std::map<std::string, mace::MaceTensor> outputs_thread5;
 
     // construct input
     auto buffer_in = std::shared_ptr<float>(new float[input_size],
@@ -660,6 +1019,22 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetClassify(
     }
     inputs_thread3[input_name_thread3] = mace::MaceTensor(input_shape_thread3, buffer_in_thread3,
                                                         mace::DataFormat::NHWC);
+
+    auto buffer_in_thread4 = std::shared_ptr<float>(new float[input_size_thread4],
+                                                   std::default_delete<float[]>());
+    for (int j = 0; j < input_size_thread4; ++j)
+    {   buffer_in_thread4.get()[j] = 128.f; //0.5
+    }
+    inputs_thread4[input_name_thread4] = mace::MaceTensor(input_shape_thread4, buffer_in_thread4,
+                                                        mace::DataFormat::NHWC);
+
+    auto buffer_in_thread5 = std::shared_ptr<float>(new float[input_size_thread5],
+                                                   std::default_delete<float[]>());
+    for (int j = 0; j < input_size_thread5; ++j)
+    {   buffer_in_thread5.get()[j] = 128.f; //0.5
+    }
+    inputs_thread5[input_name_thread5] = mace::MaceTensor(input_shape_thread5, buffer_in_thread5,
+                                                        mace::DataFormat::NHWC);
     // end
 
     // construct output
@@ -678,12 +1053,24 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetClassify(
     outputs_thread3[output_name_thread3] = mace::MaceTensor(output_shape_thread3, buffer_out_thread3,
                                                           mace::DataFormat::NHWC);
 
+    auto buffer_out_thread4 = std::shared_ptr<float>(new float[output_size_thread4],
+                                                    std::default_delete<float[]>());
+    outputs_thread4[output_name_thread4] = mace::MaceTensor(output_shape_thread4, buffer_out_thread4,
+                                                          mace::DataFormat::NHWC);
+
+    auto buffer_out_thread5 = std::shared_ptr<float>(new float[output_size_thread5],
+                                                    std::default_delete<float[]>());
+    outputs_thread5[output_name_thread5] = mace::MaceTensor(output_shape_thread5, buffer_out_thread5,
+                                                          mace::DataFormat::NHWC);
+
     using milli = std::chrono::milliseconds;
     auto start = std::chrono::high_resolution_clock::now();
 
     std::thread GPUThread (GPUInfer, std::ref(mace_context), std::ref(inputs), std::ref(outputs));  // spawn new thread that calls CPUThread
     std::thread CPUThread (CPUInfer, std::ref(mace_context_thread), std::ref(inputs_thread), std::ref(outputs_thread));  // spawn new thread that calls GPUThread
     std::thread Thread3 (Thread3Infer, std::ref(mace_context_thread3), std::ref(inputs_thread3), std::ref(outputs_thread3));  // spawn new thread that calls GPUThread
+    std::thread Thread4 (Thread4Infer, std::ref(mace_context_thread4), std::ref(inputs_thread4), std::ref(outputs_thread4));  // spawn new thread that calls GPUThread
+    std::thread Thread5 (Thread5Infer, std::ref(mace_context_thread5), std::ref(inputs_thread5), std::ref(outputs_thread5));  // spawn new thread that calls GPUThread
 
     LOGI("main, CPUThread and GPUThread now execute concurrently...");
 
@@ -691,6 +1078,8 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetClassify(
     GPUThread.join();                // pauses until first finishes
     CPUThread.join();                // pauses until second finishes
     Thread3.join();                // pauses until third finishes
+    Thread4.join();                // pauses until forth finishes
+    Thread5.join();                // pauses until fifth finishes
 
     LOGI("CPUThread and GPUThread completed inference");
 
@@ -719,6 +1108,10 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetClassify(
 //    }
     if (mace_context_thread3.runtime_type_thread == mace::RuntimeType::RT_OPENCL) {
         LOGI("Third model not running on CPU"); }
+    if (mace_context_thread4.runtime_type_thread == mace::RuntimeType::RT_OPENCL) {
+        LOGI("Forth model not running on CPU"); }
+    if (mace_context_thread4.runtime_type_thread == mace::RuntimeType::RT_OPENCL) {
+        LOGI("Fifth model not running on CPU"); }
     // transform output
     jfloatArray jOutputData = env->NewFloatArray(output_size);  // allocate
     jfloatArray jOutputData_thread = env->NewFloatArray(output_size_thread);  // allocate

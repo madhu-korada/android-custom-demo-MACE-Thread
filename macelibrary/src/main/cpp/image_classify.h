@@ -38,6 +38,14 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateGPUContextThread
 JNIEXPORT jint JNICALL
 Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateGPUContextThread3
         (JNIEnv *, jclass, jstring, jstring, jint);
+
+JNIEXPORT jint JNICALL
+Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateGPUContextThread4
+        (JNIEnv *, jclass, jstring, jstring, jint);
+
+JNIEXPORT jint JNICALL
+Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateGPUContextThread5
+        (JNIEnv *, jclass, jstring, jstring, jint);
 /*
  * Class:     com_xiaomi_mace_JniMaceUtils
  * Method:    maceMobilenetCreateEngine
@@ -54,6 +62,15 @@ Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateEngineThread
 JNIEXPORT jint JNICALL
 Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateEngineThread3
         (JNIEnv *, jclass, jint, jint, jint, jint, jstring, jstring);
+
+JNIEXPORT jint JNICALL
+Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateEngineThread4
+        (JNIEnv *, jclass, jint, jint, jint, jint, jstring, jstring);
+
+JNIEXPORT jint JNICALL
+Java_com_xiaomi_mace_JniMaceUtils_maceMobilenetCreateEngineThread5
+        (JNIEnv *, jclass, jint, jint, jint, jint, jstring, jstring);
+
 /*
  * Class:     com_xiaomi_mace_JniMaceUtils
  * Method:    maceMobilenetClassify

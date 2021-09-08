@@ -142,9 +142,13 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ap
         AppModel.instance.maceMobilenetCreateGPUContext(initData);
         AppModel.instance.maceMobilenetCreateGPUContextThread(initData);
         AppModel.instance.maceMobilenetCreateGPUContextThread3(initData);
+        AppModel.instance.maceMobilenetCreateGPUContextThread4(initData);
+        AppModel.instance.maceMobilenetCreateGPUContextThread5(initData);
         AppModel.instance.maceMobilenetCreateEngine(initData, this);
         AppModel.instance.maceMobilenetCreateEngineThread(initData, this);
         AppModel.instance.maceMobilenetCreateEngineThread3(initData, this);
+        AppModel.instance.maceMobilenetCreateEngineThread4(initData, this);
+        AppModel.instance.maceMobilenetCreateEngineThread5(initData, this);
     }
 
     @Override
@@ -175,6 +179,8 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ap
                 AppModel.instance.maceMobilenetCreateEngine(initData, CameraActivity.this);
                 AppModel.instance.maceMobilenetCreateEngineThread(initData, CameraActivity.this);
                 AppModel.instance.maceMobilenetCreateEngineThread3(initData, CameraActivity.this);
+                AppModel.instance.maceMobilenetCreateEngineThread4(initData, CameraActivity.this);
+                AppModel.instance.maceMobilenetCreateEngineThread5(initData, CameraActivity.this);
             }
         });
     }
@@ -190,6 +196,9 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ap
                 AppModel.instance.maceMobilenetCreateEngine(initData, CameraActivity.this);
                 AppModel.instance.maceMobilenetCreateEngineThread(initData, CameraActivity.this);
                 AppModel.instance.maceMobilenetCreateEngineThread3(initData, CameraActivity.this);
+                AppModel.instance.maceMobilenetCreateEngineThread4(initData, CameraActivity.this);
+                AppModel.instance.maceMobilenetCreateEngineThread5(initData, CameraActivity.this);
+
             }
         });
     }
@@ -232,5 +241,7 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ap
         AppModel.instance.maceMobilenetCreateEngine(initData, CameraActivity.this);
         AppModel.instance.maceMobilenetCreateEngineThread(initData, CameraActivity.this);
         AppModel.instance.maceMobilenetCreateEngineThread3(initData, CameraActivity.this);
+        AppModel.instance.maceMobilenetCreateEngineThread4(initData, CameraActivity.this);
+        AppModel.instance.maceMobilenetCreateEngineThread5(initData, CameraActivity.this);
     }
 }

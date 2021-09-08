@@ -61,6 +61,8 @@ public class InitData {
     private String device = "";
     private String device_GPU = "";
     private String device_thread3 = "";
+    private String device_thread4 = "";
+    private String device_thread5 = "";
     private int ompNumThreads;
     private int cpuAffinityPolicy;
     private int openclCacheReusePolicy;
@@ -69,23 +71,31 @@ public class InitData {
     private String openclCacheFullPath = "";
     private String openclCacheFullPath_GPU = "";
     private String openclCacheFullPathThread3 = "";
+    private String openclCacheFullPathThread4 = "";
+    private String openclCacheFullPathThread5 = "";
     private String storagePath = "";
     private String storagePath_GPU = "";
     private String storagePathThread3 = "";
+    private String storagePathThread4 = "";
+    private String storagePathThread5 = "";
 
     public InitData() {
         model = MODELS[0];
-        ompNumThreads = 2; //2;
+        ompNumThreads = 1; //2;
         cpuAffinityPolicy = 1;
         openclCacheReusePolicy = 1;
         gpuPerfHint = 3;
         gpuPriorityHint = 3;
-        device = DEVICES[0];
-        device_GPU = DEVICES[0];
+        device = DEVICES[1];
+        device_GPU = DEVICES[1];
         device_thread3 = DEVICES[0];
+        device_thread4 = DEVICES[0];
+        device_thread5 = DEVICES[0];
         storagePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mace";
         storagePath_GPU = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mace_GPU";
         storagePathThread3 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "maceThread3";
+        storagePathThread4 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "maceThread4";
+        storagePathThread5 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "maceThread5";
         File file = new File(storagePath);
         if (!file.exists()) {
             file.mkdir();
@@ -98,9 +108,19 @@ public class InitData {
         if (!fileThread3.exists()) {
             fileThread3.mkdir();
         }
+        File fileThread4 = new File(storagePathThread4);
+        if (!fileThread4.exists()) {
+            fileThread4.mkdir();
+        }
+        File fileThread5 = new File(storagePathThread5);
+        if (!fileThread5.exists()) {
+            fileThread5.mkdir();
+        }
         openclCacheFullPath  = storagePath + File.separator + "mace_cl_compiled_program.bin";
         openclCacheFullPath_GPU  = storagePath_GPU + File.separator + "mace_cl_compiled_program.bin";
-        openclCacheFullPathThread3  = storagePath_GPU + File.separator + "mace_cl_compiled_program.bin";
+        openclCacheFullPathThread3  = storagePathThread3 + File.separator + "mace_cl_compiled_program.bin";
+        openclCacheFullPathThread4  = storagePathThread4 + File.separator + "mace_cl_compiled_program.bin";
+        openclCacheFullPathThread5  = storagePathThread5 + File.separator + "mace_cl_compiled_program.bin";
     }
 
     public String getModel() {
@@ -195,6 +215,12 @@ public class InitData {
     public String getDeviceThread3() {
         return device_thread3;
     }
+    public String getDeviceThread4() {
+        return device_thread4;
+    }
+    public String getDeviceThread5() {
+        return device_thread5;
+    }
 
     public String getOpenclCacheFullPath_GPU() { return openclCacheFullPath_GPU;
     }
@@ -203,7 +229,15 @@ public class InitData {
     }
     public String getOpenclCacheFullPathThread3() { return openclCacheFullPathThread3;
     }
+    public String getOpenclCacheFullPathThread4() { return openclCacheFullPathThread4;
+    }
+    public String getOpenclCacheFullPathThread5() { return openclCacheFullPathThread5;
+    }
 
     public String getStoragePathThread3() { return storagePathThread3;
+    }
+    public String getStoragePathThread4() { return storagePathThread4;
+    }
+    public String getStoragePathThread5() { return storagePathThread5;
     }
 }

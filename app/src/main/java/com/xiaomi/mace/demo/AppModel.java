@@ -64,7 +64,7 @@ public class AppModel {
                         initData.getStoragePath_GPU(),
                         initData.getOpenclCacheFullPath_GPU(),
                         initData.getOpenclCacheReusePolicy());
-                Log.i("APPModel", "maceMobilenetCreateGPUContextGPUThread result = " + result);
+                Log.i("APPModel", "maceMobilenetCreateGPUContextThread result = " + result);
             }
         });
     }
@@ -78,7 +78,35 @@ public class AppModel {
                         initData.getStoragePathThread3(),
                         initData.getOpenclCacheFullPathThread3(),
                         initData.getOpenclCacheReusePolicy());
-                Log.i("APPModel", "maceMobilenetCreateGPUContextGPUThread3 result = " + result);
+                Log.i("APPModel", "maceMobilenetCreateGPUContextThread3 result = " + result);
+            }
+        });
+    }
+    
+    public void maceMobilenetCreateGPUContextThread4(final InitData initData) {
+        mJniThread.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("myTag", "This is in maceMobilenetCreateGPUContextThread4 run()");
+                int result = JniMaceUtils.maceMobilenetCreateGPUContextThread4(
+                        initData.getStoragePathThread4(),
+                        initData.getOpenclCacheFullPathThread4(),
+                        initData.getOpenclCacheReusePolicy());
+                Log.i("APPModel", "maceMobilenetCreateGPUContextThread4 result = " + result);
+            }
+        });
+    }
+
+    public void maceMobilenetCreateGPUContextThread5(final InitData initData) {
+        mJniThread.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("myTag", "This is in maceMobilenetCreateGPUContextThread5 run()");
+                int result = JniMaceUtils.maceMobilenetCreateGPUContextThread5(
+                        initData.getStoragePathThread5(),
+                        initData.getOpenclCacheFullPathThread5(),
+                        initData.getOpenclCacheReusePolicy());
+                Log.i("APPModel", "maceMobilenetCreateGPUContextThread5 result = " + result);
             }
         });
     }
@@ -136,7 +164,7 @@ public class AppModel {
         });
     }
 
-        public void maceMobilenetCreateEngineThread3(final InitData initData, final CreateEngineCallback callback) {
+    public void maceMobilenetCreateEngineThread3(final InitData initData, final CreateEngineCallback callback) {
         mJniThread.post(new Runnable() {
             @Override
             public void run() {
@@ -152,7 +180,7 @@ public class AppModel {
                     MaceApp.app.mMainHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callback.onCreateEngineFail(InitData.DEVICES[1].equals(initData.getDevice_GPU()));
+                            callback.onCreateEngineFail(InitData.DEVICES[1].equals(initData.getDeviceThread3()));
                         }
                     });
                 } else {
@@ -161,6 +189,59 @@ public class AppModel {
             }
         });
     }
+
+    public void maceMobilenetCreateEngineThread4(final InitData initData, final CreateEngineCallback callback) {
+        mJniThread.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("myTag", "This is in maceMobilenetCreateEngineThread4 run()");
+                int result = JniMaceUtils.maceMobilenetCreateEngineThread4(
+                        initData.getOmpNumThreads(), initData.getCpuAffinityPolicy(),
+                        initData.getGpuPerfHint(), initData.getGpuPriorityHint(),
+                        initData.getModel(), initData.getDeviceThread4());
+                Log.i("APPModel", "maceMobilenetCreateEngineThread3 result = " + result);
+
+                if (result == -1) {
+                    stopClassify = true;
+                    MaceApp.app.mMainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onCreateEngineFail(InitData.DEVICES[1].equals(initData.getDeviceThread4()));
+                        }
+                    });
+                } else {
+                    stopClassify = false;
+                }
+            }
+        });
+    }
+
+    public void maceMobilenetCreateEngineThread5(final InitData initData, final CreateEngineCallback callback) {
+        mJniThread.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("myTag", "This is in maceMobilenetCreateEngineThread5 run()");
+                int result = JniMaceUtils.maceMobilenetCreateEngineThread5(
+                        initData.getOmpNumThreads(), initData.getCpuAffinityPolicy(),
+                        initData.getGpuPerfHint(), initData.getGpuPriorityHint(),
+                        initData.getModel(), initData.getDeviceThread5());
+                Log.i("APPModel", "maceMobilenetCreateEngineThread5 result = " + result);
+
+                if (result == -1) {
+                    stopClassify = true;
+                    MaceApp.app.mMainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onCreateEngineFail(InitData.DEVICES[1].equals(initData.getDeviceThread5()));
+                        }
+                    });
+                } else {
+                    stopClassify = false;
+                }
+            }
+        });
+    }
+
 
     public void maceMobilenetClassify(final float[] input) {
         mJniThread.post(new Runnable() {
